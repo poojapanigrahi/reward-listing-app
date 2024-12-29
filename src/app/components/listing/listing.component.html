@@ -1,0 +1,105 @@
+<div class="content">
+    <div>
+        <h3>Search</h3>
+    </div>
+    <div class="search-bar">
+        <button class="search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+        <input type="text" class="search-input" placeholder="Search rewards..." [(ngModel)]="searchQuery"
+            (input)="filterRewards()" />
+    </div>
+
+    <div class="filters">
+
+        <div *ngIf="selectedCategory.length > 0" class="selected-filters">
+            <span>Applied Filters</span>
+            <span *ngFor="let category of selectedCategory" class="filter-item">
+                <span class="category-name">{{ category }}</span>
+                <button class="remove-btn" (click)="toggleCategory(category)">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+            </span>
+            <br>
+            <button class="filter-item" (click)="removeFilter()">Clear Filters <i
+                    class="fas fa-times-circle"></i></button>
+        </div>
+    </div>
+
+    <div class="columns">
+
+        <div class="left-column">
+
+            <div class="card-container">
+                <div class="card">
+                    <h5>Categories</h5>
+                    <div class="card" *ngFor="let category of categories">
+                        <div class="card-header">
+                            <h3>{{ category }}</h3>
+                            <label class="custom-checkbox">
+                                <input type="checkbox" [checked]="selectedCategory.includes(category)"
+                                    (click)="toggleCategory(category)" />
+                                <span class="checkbox"></span>
+                            </label>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="right-column">
+            <div class="total-count">
+                <h6> {{ getTotalCount() }} results found</h6>
+            </div>
+            <div>
+                <button class="btn  sort-tray" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight"
+                    aria-controls="offcanvasRight">
+                    Sort
+                </button>
+            </div>
+            <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight"
+                aria-labelledby="offcanvasRightLabel">
+                <div class="offcanvas-header">
+                    <h5 id="offcanvasRightLabel">Filter By</h5>
+                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                        aria-label="Close"></button>
+                </div>
+                <div class="offcanvas-body">
+                    <button class="btn btn-outline-primary mb-2 newbtns" [class.active]="sortOrder === 'asc'"
+                        (click)="setSortOrder('asc')">Sort A to Z</button>
+                    <button class="btn btn-outline-primary mb-2 newbtns" [class.active]="sortOrder === 'desc'"
+                        (click)="setSortOrder('desc')">Sort Z to A</button>
+                    <button class="btn btn-outline apply-tray" (click)="applySort()">Apply</button>
+
+                </div>
+            </div>
+            <div class="cards-container">
+
+                <div *ngFor="let reward of filteredRewards" class="card">
+                    <div class="card-content">
+                        <div class="card-image">
+                            <img [src]="reward.display_img_url || 'default-image-url.jpg'" alt="{{ reward.name }}" />
+                        </div>
+                        <div class="card-details">
+                            <h4>{{ reward.name }}</h4>
+                            <p>{{ reward.points }} points</p>
+                            <p *ngIf="reward.quantity === 0" class="out-of-stock">Out of Stock</p>
+                            <p *ngIf="reward.quantity !== null && reward.quantity <= reward.low_quantity && reward.quantity > 0"
+                                class="high-demand">
+                                ON High Demand (Only {{ reward.quantity }} rewards left)
+                            </p>
+                            <p *ngIf="reward.quantity > reward.low_quantity && reward.quantity !== null"
+                                class="quantity">
+                                Quantity: {{ reward.quantity }}
+                            </p>
+                            <p>Valid until: {{ reward.valid_until | date }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
